@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Reset Password</title>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            main {
+                background-color: darkblue;
+                width: 40%;
+                margin: 100px auto;
+                text-align: center;
+            }
+
+            form {
+                padding: 30px 0;
+                color: white;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-areas: "title title" "lable1 pass1" "lable2 pass2" "submit submit";
+                row-gap: 15px
+            }
+
+            h2 {
+                grid-area: title;
+            }
+
+            .input-lable1{
+                grid-area: lable1;
+            }
+
+            .input-lable2{
+                grid-area: lable2;
+            }
+
+            .password-input1 {
+                grid-area: pass1;
+                display: block;
+                width: 75%;
+                margin: 0 auto;
+            }
+
+            .password-input2 {
+                grid-area: pass2;
+                display: block;
+                width: 75%;
+                margin: 0 auto;
+            }
+
+            .submit {
+                width: 25%;
+                grid-area: submit;
+                display: block;
+                margin: 0 auto;
+            }
+
+        </style>
+    </head>
+    <body>
+        <main>
+            <form th:action="@{/api/v1/reset-password}" method="post">
+                <h2>Reset Password</h2>
+				<input type="hidden" name="token" th:value="${token}" />
+                <label for="newPassword" class="input-lable1">New Password</label>
+                <input type="password" name="newPassword" id="newPassword" class="password-input1" required>
+                <label for="confirmPassword" class="input-lable2">Confirm Password</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" class="password-input2" required>
+                <input type="submit" class="submit">
+            </form>
+        </main>
+    </body>
+</html>
