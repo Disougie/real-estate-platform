@@ -3,11 +3,11 @@ package com.disougie.notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.disougie.app_user.AppUser;
 import com.disougie.util.PageResponse;
+import com.disougie.util.PageResponseMapper;
 import com.disougie.util.TimeUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,7 @@ public class NotificationService {
 	
 	private final NotificationRepository notificationRepository;
 	private final SimpMessagingTemplate messagingTemplate;
+	private final PageResponseMapper<NotificationResponse> pageResponseMapper;
 
 	public PageResponse<NotificationResponse> getMyNotifications(int page, int size) {
 		 
@@ -25,22 +26,10 @@ public class NotificationService {
 				.findAll(PageRequest.of(page, size))
 				.map(note -> new NotificationResponse(note.getMessage()));
 		
-		return new PageResponse<NotificationResponse>(
-				 pageOfNotifications.getContent(),
-				 pageOfNotifications.getTotalPages(),
-				 pageOfNotifications.getTotalElements(),
-				 pageOfNotifications.getNumber(),
-				 pageOfNotifications.getSize(),
-				 pageOfNotifications.isLast()
-			);
+		return pageResponseMapper.apply(pageOfNotifications);
 		
 	}
 	
-	
-	//TODO: messaging queue
-	
-	
-	@Async
 	public void sendNotification(AppUser recipient, String message) {
 		notificationRepository.save(
 				new Notification(null,recipient,message,TimeUtil.now())

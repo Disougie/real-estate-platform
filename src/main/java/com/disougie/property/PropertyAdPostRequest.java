@@ -2,6 +2,8 @@ package com.disougie.property;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.disougie.property.entity.PropertyType;
 
 import jakarta.validation.constraints.NotBlank;
@@ -15,8 +17,6 @@ public record PropertyAdPostRequest(
 		Double price,
 		@NotNull
 		PropertyType type,
-		@NotBlank
-		String title_deed_number,
 		@NotNull
 		Double lng,
 		@NotNull
@@ -24,7 +24,7 @@ public record PropertyAdPostRequest(
 		String description,
 		Integer rooms,
 		Integer baths,
-		List<byte[]> images,
+		List<MultipartFile> images,
 		@NotBlank
 		String city,
 		@NotBlank

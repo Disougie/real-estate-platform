@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import com.disougie.app_user.AppUser;
 import com.disougie.app_user.AppUserRepository;
 import com.disougie.exception.ResourceNotFoundException;
+import com.disougie.imagekit.ImageService;
 import com.disougie.payment.PaymentProvider;
 import com.disougie.payment.PaymentResponse;
 import com.disougie.property.entity.Features;
+import com.disougie.property.entity.Image;
 import com.disougie.property.entity.Location;
 import com.disougie.property.entity.Property;
 import com.disougie.property.entity.PropertyStatus;
@@ -36,6 +38,7 @@ public class PropertyService {
 	private final PropertyRepository propertyRepository;
 	private final AppUserRepository appUserRepository;
 	private final PaymentProvider paymentProvider;
+	private final ImageService imageService;
 	
 	
 	private void checkUserAuthorization(Long id) {
@@ -92,9 +95,7 @@ public class PropertyService {
 		
 		AppUser owner = JwtService.getCurrentUser();
 		
-		
-		//TODO: upload the images to cloud if it's exist in the request and then save the URLs in the database below
-		
+		List<Image> images  = imageService.uploadImages(request.images());
 		
 		Property property = Property.builder()
 				.owner_id(owner.getId())
@@ -116,7 +117,7 @@ public class PropertyService {
 							request.size()
 						)
 				)
-//				.images_urls(null)
+				.images(images)
 				.status(PropertyStatus.PENDING_PAYMENT)
 				.build();
 		
@@ -161,11 +162,17 @@ public class PropertyService {
 			property.setPrice(request.price());
 		
 		if(request.images() != null) {
+			List<String> filesId = property
+					.getImages()
+					.stream()
+					.map(image -> image.getFileId())
+					.toList();
 			
-			//TODO: delete the previous images of the property from the cloud and upload the new ones
-			//TODO: save the new URLs in database to replace the previous ones
-			//TODO: upload the images to the cloud
+			for(String fileId: filesId)
+				imageService.deleteImage(fileId);
 			
+			List<Image> newImages = imageService.uploadImages(request.images());
+			property.setImages(newImages);
 		}
 		
 		propertyRepository.save(property);

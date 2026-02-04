@@ -47,7 +47,8 @@ public class Property {
 	@Embedded
 	private Location location;
 	
-	private List<String> images_urls;
+	@Embedded
+	private List<Image> images;
 	
 	private String description;
 	

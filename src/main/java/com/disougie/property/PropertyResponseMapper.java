@@ -1,5 +1,6 @@
 package com.disougie.property;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
@@ -11,6 +12,12 @@ public class PropertyResponseMapper implements Function<Property, PropertyRespon
 
 	@Override
 	public PropertyResponse apply(Property property) {
+		
+		List<String> imagesUrls = property
+				.getImages()
+				.stream()
+				.map(image -> image.getImageUrl())
+				.toList();
 				
 		return new PropertyResponse(
 				property.getId(),
@@ -24,7 +31,7 @@ public class PropertyResponseMapper implements Function<Property, PropertyRespon
 				property.getMapsLocation().getCoordinates(), 
 				property.getLocation().getCity(), 
 				property.getLocation().getArea(), 
-				property.getImages_urls(),
+				imagesUrls,
 				property.getReview()
 		);
 	}
