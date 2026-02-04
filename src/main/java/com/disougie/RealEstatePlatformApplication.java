@@ -23,6 +23,10 @@ public class RealEstatePlatformApplication {
 		System.setProperty("MONGO_URL", dotenv.get("MONGO_URL"));
 		System.setProperty("MONGO_DB_NAME", dotenv.get("MONGO_DB_NAME"));
 		System.setProperty("SECRET_KEY", dotenv.get("SECRET_KEY"));
+		System.setProperty("REDIS_HOST", dotenv.get("REDIS_HOST"));
+		System.setProperty("REDIS_PORT", dotenv.get("REDIS_PORT"));
+		
+		
 		
 		ApplicationContext context = SpringApplication
 				.run(RealEstatePlatformApplication.class, args);
